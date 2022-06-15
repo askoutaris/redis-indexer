@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedisIndexer", "RedisIndexer\RedisIndexer.csproj", "{12CB195A-9CF9-486C-9121-83DA55B3FD53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedisIndexer.Extensions.DependencyInjection", "RedisIndexer.Extensions.DependencyInjection\RedisIndexer.Extensions.DependencyInjection.csproj", "{47F7D7FE-050C-4AC6-A90A-EA58A837C7E5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Workbench", "Workbench\Workbench.csproj", "{A8B3EC74-8897-43FE-ACF2-2D9B3825B940}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AEDED059-CA2F-4893-9CD7-15E7F92411AC}"s
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12CB195A-9CF9-486C-9121-83DA55B3FD53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12CB195A-9CF9-486C-9121-83DA55B3FD53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12CB195A-9CF9-486C-9121-83DA55B3FD53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12CB195A-9CF9-486C-9121-83DA55B3FD53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47F7D7FE-050C-4AC6-A90A-EA58A837C7E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47F7D7FE-050C-4AC6-A90A-EA58A837C7E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47F7D7FE-050C-4AC6-A90A-EA58A837C7E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47F7D7FE-050C-4AC6-A90A-EA58A837C7E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8B3EC74-8897-43FE-ACF2-2D9B3825B940}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8B3EC74-8897-43FE-ACF2-2D9B3825B940}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8B3EC74-8897-43FE-ACF2-2D9B3825B940}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8B3EC74-8897-43FE-ACF2-2D9B3825B940}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9A0FDAEF-883B-44AC-8B29-1894E2450DDD}
+	EndGlobalSection
+EndGlobal
