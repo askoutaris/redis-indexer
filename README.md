@@ -1,44 +1,96 @@
-# type-signature
-Creates the signature of the entire structure of a type (including all its properties, fields and children)
+# redis-indexer
+Indexer functionality to index and search documents in Redis by many different fields (like ElasticSearch, but with much less functionality supported at the moment)
 
-### TypeSignature Usage
+### RedisIndexer Usage
 ```csharp
-ITypeScanner typeScanner = new TypeScanner();
-IHashGenerator hashGenerator = new SHA512HashGenerator();
-ISignatureBuilder signatureBuilder = new SignatureBuilder(typeScanner, hashGenerator);
+class Program
+	{
+		static async Task Main(string[] args)
+		{
+			var multiplexer = ConnectionMultiplexer.Connect("redis.dev-sb-docker.local,allowAdmin=true,defaultDatabase=0");
 
-string signature = signatureBuilder.GetSignature<Person>();
+			// setup our DI
+			var serviceProvider = new ServiceCollection()
+				.AddTransient<IDatabase>(_ => multiplexer.GetDatabase())
+				.AddRedisIndexer<Person>(builder => builder
+					.ConfigureMappings(mappings => mappings
+						.AddValue(x => x.Id, id => id.ToString())
+						.AddValue(x => x.Name, name => name)
+						.AddValue(x => x.DateOfBirth, dateOfBirth => dateOfBirth.ToString("o"))
+						.AddCollection(x => x.Addresses.Select(a => a.Country), country => country)
+						.AddCollection(x => x.Addresses.Select(a => a.City), city => city)))
+				.BuildServiceProvider();
 
-Console.WriteLine($"The signature of type Person is: {signature}");
+			IIndexManager<Person> indexManager = serviceProvider.GetRequiredService<IIndexManager<Person>>();
+			IDatabase db = serviceProvider.GetRequiredService<IDatabase>();
 
-//The signature of type Person is: b1e38d81d7b812739b0fd09e053a1ecf1936144619e4452ac8633feea6ad41fe
-```
+			foreach (var person in GetPeople())
+				await indexManager.Index(db, person.Id.ToString(), person);
 
-### ASP.NET Core
+			var peopleIds = await indexManager.SearchKeys(db, filters => filters.AddExact(x => x.Name, "Bill"));
+			Console.WriteLine($"Search by Name: 'Bill' PeopleIds: {string.Join(',', peopleIds)}");
 
-In order to use TypeSignature with ASP.Net Core you have to install <a href="https://www.nuget.org/packages/TypeSignature.Extensions.DependencyInjection/" target="_blank">TypeSignature.Extensions.DependencyInjection</a> nuget package
+			peopleIds = await indexManager.SearchKeys(db, filters => filters.AddRange(x => x.Name, "Bill", null));
+			Console.WriteLine($"Search by c Name: 'Bill' PeopleIds: {string.Join(',', peopleIds)}");
 
-```csharp
-public void ConfigureServices(IServiceCollection services)
-{
-  services.AddTypeSignatureSHA256();
-  // or
-  services.AddTypeSignatureSHA512();
-}
-```
+			peopleIds = await indexManager.SearchKeys(db, filters => filters.AddExact(x => x.Addresses.Select(a => a.Country), "Germany"));
+			Console.WriteLine($"Search by Country: 'Germany' PeopleIds: {string.Join(',', peopleIds)}");
 
-### Microsoft Dependency Injection
+			peopleIds = await indexManager.SearchKeys(db, filters => filters.AddExact(x => x.Addresses.Select(a => a.Country), "Greece"));
+			Console.WriteLine($"Search by Country: 'Greece' PeopleIds: {string.Join(',', peopleIds)}");
 
-In order to use TypeSignature with Microsoft Dependency Injection you have to install <a href="https://www.nuget.org/packages/TypeSignature.Extensions.DependencyInjection/" target="_blank">TypeSignature.Extensions.DependencyInjection</a> nuget package
+			peopleIds = await indexManager.SearchKeys(db, filters => filters.AddRange(x => x.DateOfBirth, new DateTime(2001, 1, 1).ToString("o"), null));
+			Console.WriteLine($"Search by minimum DateOfBirth: '2001-01-01' PeopleIds: {string.Join(',', peopleIds)}");
 
-```csharp
-// setup our DI
-var serviceProvider = new ServiceCollection()
-  .AddTypeSignatureSHA256()
-  .BuildServiceProvider();
+			Console.ReadLine();
+		}
 
-// resolve SignatureBuilder
-ISignatureBuilder signatureBuilder = serviceProvider.GetService<ISignatureBuilder>();
+		private static IEnumerable<Person> GetPeople()
+		{
+			yield return new Person
+			{
+				Id = 1,
+				Name = "Bill",
+				DateOfBirth = new DateTime(2000, 1, 1),
+				Addresses = new[] {
+					new Address{ Country = "Germany", City = "Berlin" },
+					new Address{ Country = "US", City = "New York" }
+				}
+			};
 
-string signature = signatureBuilder.GetSignature<Person>();
+			yield return new Person
+			{
+				Id = 2,
+				Name = "Bill",
+				DateOfBirth = new DateTime(2005, 1, 1),
+				Addresses = new[] {
+					new Address{ Country = "Germany", City = "Berlin" },
+				}
+			};
+
+			yield return new Person
+			{
+				Id = 3,
+				Name = "John",
+				DateOfBirth = new DateTime(2010, 1, 1),
+				Addresses = new[] {
+					new Address{ Country = "Greece", City = "Athens" },
+				}
+			};
+		}
+	}
+
+	public class Person
+	{
+		public int Id { get; set; }
+		public string Name { get; set; }
+		public DateTime DateOfBirth { get; set; }
+		public Address[] Addresses { get; set; }
+	}
+
+	public class Address
+	{
+		public string Country { get; set; }
+		public string City { get; set; }
+	}
 ```
