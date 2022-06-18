@@ -3,7 +3,7 @@ using RedisIndexer.Factories;
 using RedisIndexer.Persistence;
 using RedisIndexer.Persistence.Write;
 using RedisIndexer.Serializers;
-using RedisIndexer.Utils;
+using RedisIndexer.ExpressionHelpers;
 using Microsoft.Extensions.Logging;
 
 namespace RedisIndexer

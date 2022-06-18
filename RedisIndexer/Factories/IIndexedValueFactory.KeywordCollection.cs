@@ -2,27 +2,28 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using RedisIndexer.Persistence.Write;
-using RedisIndexer.Utils;
+using RedisIndexer.ExpressionHelpers;
+using RedisIndexer.ValueConverters;
 
 namespace RedisIndexer.Factories
 {
-	class CollectionIndexedValueFactory<TType, TProperty> : IIndexedValueFactory<TType>
+	class KeywordCollectionIndexedValueFactory<TType, TProperty> : IIndexedValueFactory<TType>
 	{
 		private readonly string _setKey;
 		private readonly IValueFactory _valueFactory;
 		private readonly Func<TType, IEnumerable<TProperty>> _propertySelector;
-		private readonly Func<TProperty, string> _valueSelector;
+		private readonly IValueConverter<TProperty> _converter;
 
-		public CollectionIndexedValueFactory(
+		public KeywordCollectionIndexedValueFactory(
 			IExpressionHelper expressionHelper,
 			IValueFactory valueFactory,
 			Expression<Func<TType, IEnumerable<TProperty>>> propertySelector,
-			Func<TProperty, string> valueSelector)
+			IValueConverter<TProperty> converter)
 		{
 			_setKey = expressionHelper.GetMemberPath(propertySelector);
 			_valueFactory = valueFactory;
 			_propertySelector = propertySelector.Compile();
-			_valueSelector = valueSelector;
+			_converter = converter;
 		}
 
 		public IEnumerable<IndexedValue> GetValues(string documentKey, TType obj)
@@ -30,7 +31,7 @@ namespace RedisIndexer.Factories
 			var properties = _propertySelector(obj);
 			foreach (var property in properties)
 			{
-				var value = _valueSelector(property);
+				var value = _converter.Convert(property);
 				var indexedValue = _valueFactory.CreateDocumentValue(value, documentKey);
 				yield return new IndexedValue.SortedSet(setKey: _setKey, value: indexedValue);
 			}

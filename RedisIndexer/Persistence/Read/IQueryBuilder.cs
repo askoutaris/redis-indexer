@@ -5,8 +5,8 @@ namespace RedisIndexer.Persistence.Read
 {
 	public interface IQueryBuilder<TType>
 	{
-		QueryBuilder<TType> AddRange<TProperty>(Expression<Func<TType, TProperty>> propertySelector, string? valueFrom, string? valueTo);
-		QueryBuilder<TType> AddExact<TProperty>(Expression<Func<TType, TProperty>> propertySelector, string value);
+		QueryBuilder<TType> AddKeywordRange<TProperty>(Expression<Func<TType, TProperty>> propertySelector, string? valueFrom, string? valueTo);
+		QueryBuilder<TType> AddKeyword<TProperty>(Expression<Func<TType, TProperty>> propertySelector, string value);
 		IIndexQueryable[] ToQueryables();
 	}
 }

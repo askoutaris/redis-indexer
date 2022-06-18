@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using RedisIndexer.Factories;
-using RedisIndexer.Utils;
+using RedisIndexer.ExpressionHelpers;
 using StackExchange.Redis;
 
 namespace RedisIndexer.Persistence.Read

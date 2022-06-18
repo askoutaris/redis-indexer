@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using RedisIndexer.Factories;
-using RedisIndexer.Utils;
+using RedisIndexer.ExpressionHelpers;
 
 namespace RedisIndexer.Persistence.Read
 {
@@ -19,7 +19,7 @@ namespace RedisIndexer.Persistence.Read
 			_queryables = new List<IIndexQueryable>();
 		}
 
-		public QueryBuilder<TType> AddExact<TProperty>(Expression<Func<TType, TProperty>> propertySelector, string value)
+		public QueryBuilder<TType> AddKeyword<TProperty>(Expression<Func<TType, TProperty>> propertySelector, string value)
 		{
 			var setKey = _expressionHelper.GetMemberPath(propertySelector);
 			var queryableValueFrom = value != null ? _valueFactory.CreateQueryableValue(value) : null;
@@ -28,7 +28,7 @@ namespace RedisIndexer.Persistence.Read
 			return this;
 		}
 
-		public QueryBuilder<TType> AddRange<TProperty>(Expression<Func<TType, TProperty>> propertySelector, string? valueFrom, string? valueTo)
+		public QueryBuilder<TType> AddKeywordRange<TProperty>(Expression<Func<TType, TProperty>> propertySelector, string? valueFrom, string? valueTo)
 		{
 			var setKey = _expressionHelper.GetMemberPath(propertySelector);
 			var queryableValueFrom = valueFrom != null ? _valueFactory.CreateQueryableValue(valueFrom) : null;
