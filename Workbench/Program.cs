@@ -19,7 +19,7 @@ namespace Workbench
 			var serviceProvider = new ServiceCollection()
 				.AddTransient<IDatabase>(_ => multiplexer.GetDatabase())
 				.AddRedisIndexer<Person>(builder => builder
-					.ConfigureMappings(mappings => mappingss
+					.ConfigureMappings(mappings => mappings
 						.AddKeyword(x => x.Id)
 						.AddKeyword(x => x.Name)
 						.AddTokenized(x => x.Name, 4)
