@@ -3,7 +3,7 @@ using RedisIndexer.Factories;
 using RedisIndexer.Persistence;
 using RedisIndexer.Persistence.Write;
 using RedisIndexer.Serializers;
-using RedisIndexer.ExpressionHelpers;
+using RedisIndexer.Utils;
 using Microsoft.Extensions.Logging;
 
 namespace RedisIndexer
@@ -25,9 +25,12 @@ namespace RedisIndexer
 		{
 			_expressionHelper = new ExpressionHelper();
 			_valueFactory = new ValueFactory();
-			_documentValuesSerializer = new RedisNewtonsoftSerializer<DocumentValues>();
-			_documentSourceSerializer = new RedisNewtonsoftSerializer<DocumentSource>();
-			_documentSerializer = new RedisNewtonsoftSerializer<TType>();
+			_documentValuesSerializer = new RedisNewtonsoftSerializer<DocumentValues>(settings => {
+				settings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto;
+				settings.SerializationBinder = new TypeNameSerializationBinder(_loggerFactory?.CreateLogger<TypeNameSerializationBinder>());
+			});
+			_documentSourceSerializer = new RedisNewtonsoftSerializer<DocumentSource>(settings => settings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects);
+			_documentSerializer = new RedisNewtonsoftSerializer<TType>(settings => settings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects);
 		}
 
 		public IndexManagerBuilder<TType> WithValueFactory(IValueFactory valueFactory)

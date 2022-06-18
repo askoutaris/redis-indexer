@@ -25,5 +25,7 @@ namespace RedisIndexer.Factories
 		IDocumentValuesFactory<TType> AddKeyword(Expression<Func<TType, long>> propertySelector);
 		IDocumentValuesFactory<TType> AddKeyword(Expression<Func<TType, DateTime>> propertySelector);
 		IDocumentValuesFactory<TType> AddKeyword<TProperty>(Expression<Func<TType, TProperty>> propertySelector, IValueConverter<TProperty> converter);
+
+		IDocumentValuesFactory<TType> AddTokenized(Expression<Func<TType, string>> propertySelector, int minLength);
 	}
 }

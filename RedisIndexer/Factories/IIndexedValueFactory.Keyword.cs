@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using RedisIndexer.Persistence.Write;
-using RedisIndexer.ExpressionHelpers;
+using RedisIndexer.Utils;
 using RedisIndexer.ValueConverters;
 
 namespace RedisIndexer.Factories
@@ -29,8 +29,8 @@ namespace RedisIndexer.Factories
 
 		public IEnumerable<IndexedValue> GetValues(string documentKey, TType obj)
 		{
-			var proertyValue = _propertySelector(obj);
-			var value = _converter.Convert(proertyValue);
+			var propertyValue = _propertySelector(obj);
+			var value = _converter.Convert(propertyValue);
 			var indexedValue = _valueFactory.CreateDocumentValue(value, documentKey);
 
 			yield return new IndexedValue.SortedSet(setKey: _setKey, value: indexedValue);

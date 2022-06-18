@@ -19,9 +19,10 @@ namespace Workbench
 			var serviceProvider = new ServiceCollection()
 				.AddTransient<IDatabase>(_ => multiplexer.GetDatabase())
 				.AddRedisIndexer<Person>(builder => builder
-					.ConfigureMappings(mappings => mappings
+					.ConfigureMappings(mappings => mappingss
 						.AddKeyword(x => x.Id)
 						.AddKeyword(x => x.Name)
+						.AddTokenized(x => x.Name, 4)
 						.AddKeyword(x => x.DateOfBirth)
 						.AddKeywordCollection(x => x.Addresses.Select(a => a.Country))
 						.AddKeywordCollection(x => x.Addresses.Select(a => a.City))))
@@ -33,19 +34,22 @@ namespace Workbench
 			foreach (var person in GetPeople())
 				await indexManager.Index(db, person.Id.ToString(), person);
 
-			var peopleIds = await indexManager.SearchKeys(db, filters => filters.AddKeyword(x => x.Name, "Bill"));
+			var peopleIds = await indexManager.SearchKeys(db, filters => filters.ByValue(x => x.Name, "Alkivi"));
+			Console.WriteLine($"Search by containing Name: 'Alkivi' PeopleIds: {string.Join(',', peopleIds)}");
+
+			peopleIds = await indexManager.SearchKeys(db, filters => filters.ByValue(x => x.Name, "Bill"));
 			Console.WriteLine($"Search by Name: 'Bill' PeopleIds: {string.Join(',', peopleIds)}");
 
-			peopleIds = await indexManager.SearchKeys(db, filters => filters.AddKeywordRange(x => x.Name, "Bill", null));
+			peopleIds = await indexManager.SearchKeys(db, filters => filters.ByValueRange(x => x.Name, "Bill", null));
 			Console.WriteLine($"Search by c Name: 'Bill' PeopleIds: {string.Join(',', peopleIds)}");
 
-			peopleIds = await indexManager.SearchKeys(db, filters => filters.AddKeyword(x => x.Addresses.Select(a => a.Country), "Germany"));
+			peopleIds = await indexManager.SearchKeys(db, filters => filters.ByValue(x => x.Addresses.Select(a => a.Country), "Germany"));
 			Console.WriteLine($"Search by Country: 'Germany' PeopleIds: {string.Join(',', peopleIds)}");
 
-			peopleIds = await indexManager.SearchKeys(db, filters => filters.AddKeyword(x => x.Addresses.Select(a => a.Country), "Greece"));
+			peopleIds = await indexManager.SearchKeys(db, filters => filters.ByValue(x => x.Addresses.Select(a => a.Country), "Greece"));
 			Console.WriteLine($"Search by Country: 'Greece' PeopleIds: {string.Join(',', peopleIds)}");
 
-			peopleIds = await indexManager.SearchKeys(db, filters => filters.AddKeywordRange(x => x.DateOfBirth, new DateTime(2001, 1, 1).ToString("o"), null));
+			peopleIds = await indexManager.SearchKeys(db, filters => filters.ByValueRange(x => x.DateOfBirth, new DateTime(2001, 1, 1).ToString("o"), null));
 			Console.WriteLine($"Search by minimum DateOfBirth: '2001-01-01' PeopleIds: {string.Join(',', peopleIds)}");
 
 			Console.ReadLine();
@@ -59,9 +63,9 @@ namespace Workbench
 				Name = "Bill",
 				DateOfBirth = new DateTime(2000, 1, 1),
 				Addresses = new[] {
-					new Address{ Country = "Germany", City = "Berlin" },
-					new Address{ Country = "US", City = "New York" }
-				}
+						new Address{ Country = "Germany", City = "Berlin" },
+						new Address{ Country = "US", City = "New York" }
+					}
 			};
 
 			yield return new Person
@@ -70,18 +74,18 @@ namespace Workbench
 				Name = "Bill",
 				DateOfBirth = new DateTime(2005, 1, 1),
 				Addresses = new[] {
-					new Address{ Country = "Germany", City = "Berlin" },
-				}
+						new Address{ Country = "Germany", City = "Berlin" },
+					}
 			};
 
 			yield return new Person
 			{
 				Id = 3,
-				Name = "John",
+				Name = "Alkiviadis",
 				DateOfBirth = new DateTime(2010, 1, 1),
 				Addresses = new[] {
-					new Address{ Country = "Greece", City = "Athens" },
-				}
+						new Address{ Country = "Greece", City = "Athens" },
+					}
 			};
 		}
 	}

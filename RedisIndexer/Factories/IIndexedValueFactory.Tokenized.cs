@@ -7,32 +7,37 @@ using RedisIndexer.ValueConverters;
 
 namespace RedisIndexer.Factories
 {
-	class KeywordCollectionIndexedValueFactory<TType, TProperty> : IIndexedValueFactory<TType>
+
+	class TokenizedIndexedValueFactory<TType> : IIndexedValueFactory<TType>
 	{
 		private readonly string _setKey;
+		private readonly Func<TType, string> _propertySelector;
 		private readonly IValueFactory _valueFactory;
-		private readonly Func<TType, IEnumerable<TProperty>> _propertySelector;
-		private readonly IValueConverter<TProperty> _converter;
+		private readonly IValueConverter<string> _converter;
+		private readonly IStringTokenizer _tokenizer;
 
-		public KeywordCollectionIndexedValueFactory(
+		public TokenizedIndexedValueFactory(
 			IExpressionHelper expressionHelper,
+			Expression<Func<TType, string>> propertySelector,
 			IValueFactory valueFactory,
-			Expression<Func<TType, IEnumerable<TProperty>>> propertySelector,
-			IValueConverter<TProperty> converter)
+			IValueConverter<string> converter,
+			IStringTokenizer tokenizer)
 		{
 			_setKey = expressionHelper.GetMemberPath(propertySelector);
-			_valueFactory = valueFactory;
 			_propertySelector = propertySelector.Compile();
+			_valueFactory = valueFactory;
 			_converter = converter;
+			_tokenizer = tokenizer;
 		}
 
 		public IEnumerable<IndexedValue> GetValues(string documentKey, TType obj)
 		{
-			var properties = _propertySelector(obj);
-			foreach (var property in properties)
+			var propertyValue = _propertySelector(obj);
+			var value = _converter.Convert(propertyValue);
+
+			foreach (var token in _tokenizer.Tokenize(value))
 			{
-				var value = _converter.Convert(property);
-				var indexedValue = _valueFactory.CreateDocumentValue(value, documentKey);
+				var indexedValue = _valueFactory.CreateDocumentValue(token, documentKey);
 				yield return new IndexedValue.SortedSet(setKey: _setKey, value: indexedValue);
 			}
 		}

@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace RedisIndexer.ExpressionHelpers
+namespace RedisIndexer.Utils
 {
 	public interface IExpressionHelper
 	{

@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace RedisIndexer.ExpressionHelpers
+namespace RedisIndexer.Utils
 {
 	class ExpressionHelper : IExpressionHelper
 	{

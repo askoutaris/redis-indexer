@@ -1,9 +1,11 @@
 ﻿using RedisIndexer.Persistence;
+using RedisIndexer.Serializers;
 
 namespace RedisIndexer.Persistence.Write
 {
 	abstract partial class IndexedValue
 	{
+		[JsonDiscriminator("IndexedValue.SortedSet")]
 		public class SortedSet : IndexedValue
 		{
 			public string SetKey { get; }

@@ -7,7 +7,7 @@ using RedisIndexer.Persistence;
 using RedisIndexer.Persistence.Read;
 using RedisIndexer.Persistence.Write;
 using RedisIndexer.Serializers;
-using RedisIndexer.ExpressionHelpers;
+using RedisIndexer.Utils;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 

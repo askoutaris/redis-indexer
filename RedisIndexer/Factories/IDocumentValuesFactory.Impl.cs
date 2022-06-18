@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Cryptography;
-using RedisIndexer.ExpressionHelpers;
+using RedisIndexer.Utils;
 using RedisIndexer.Persistence.Write;
 using RedisIndexer.ValueConverters;
 
@@ -50,10 +50,18 @@ namespace RedisIndexer.Factories
 		public IDocumentValuesFactory<TType> AddKeyword(Expression<Func<TType, short>> propertySelector) => AddKeyword(propertySelector, new Int16ValueConverter());
 		public IDocumentValuesFactory<TType> AddKeyword(Expression<Func<TType, int>> propertySelector) => AddKeyword(propertySelector, new Int32ValueConverter());
 		public IDocumentValuesFactory<TType> AddKeyword(Expression<Func<TType, long>> propertySelector) => AddKeyword(propertySelector, new Int64ValueConverter());
-		public IDocumentValuesFactory<TType> AddKeyword(Expression<Func<TType, DateTime>> propertySelector)=>AddKeyword(propertySelector, new DateTimeValueConverter());
+		public IDocumentValuesFactory<TType> AddKeyword(Expression<Func<TType, DateTime>> propertySelector) => AddKeyword(propertySelector, new DateTimeValueConverter());
 		public IDocumentValuesFactory<TType> AddKeyword<TProperty>(Expression<Func<TType, TProperty>> propertySelector, IValueConverter<TProperty> converter)
 		{
 			_valueFactories.Add(new KeywordIndexedValueFactory<TType, TProperty>(_expressionHelper, propertySelector, _valueFactory, converter));
+			return this;
+		}
+
+		public IDocumentValuesFactory<TType> AddTokenized(Expression<Func<TType, string>> propertySelector, int minLength)
+		{
+			var converter = new StringValueConverter();
+			var tokenizer = new StringTokenizer(minLength);
+			_valueFactories.Add(new TokenizedIndexedValueFactory<TType>(_expressionHelper, propertySelector, _valueFactory, converter, tokenizer));
 			return this;
 		}
 	}

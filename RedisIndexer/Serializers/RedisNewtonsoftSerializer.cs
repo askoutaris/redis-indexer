@@ -6,14 +6,17 @@ namespace RedisIndexer.Serializers
 {
 	class RedisNewtonsoftSerializer<TType> : IRedisSerializer<TType>
 	{
-		private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
-		{
-			TypeNameHandling = TypeNameHandling.Objects
-		};
+		private readonly JsonSerializerSettings? _settings;
 
 		public RedisNewtonsoftSerializer()
 		{
 
+		}
+
+		public RedisNewtonsoftSerializer(Action<JsonSerializerSettings> configureSettings)
+		{
+			_settings = new JsonSerializerSettings();
+			configureSettings(_settings);
 		}
 
 		public RedisNewtonsoftSerializer(JsonSerializerSettings settings)
