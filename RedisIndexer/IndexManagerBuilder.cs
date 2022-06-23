@@ -11,9 +11,9 @@ namespace RedisIndexer
 	public class IndexManagerBuilder<TType>
 	{
 		private IValueFactory _valueFactory;
-		private IRedisSerializer<DocumentValues> _documentValuesSerializer;
-		private IRedisSerializer<DocumentSource> _documentSourceSerializer;
-		private IRedisSerializer<TType> _documentSerializer;
+		private IRedisSerializer<DocumentValues>? _documentValuesSerializer;
+		private IRedisSerializer<DocumentSource>? _documentSourceSerializer;
+		private IRedisSerializer<TType>? _documentSerializer;
 		private IExpressionHelper _expressionHelper;
 		private Action<IDocumentValuesFactory<TType>>? _configureMappings;
 		private ILoggerFactory? _loggerFactory;
@@ -25,12 +25,6 @@ namespace RedisIndexer
 		{
 			_expressionHelper = new ExpressionHelper();
 			_valueFactory = new ValueFactory();
-			_documentValuesSerializer = new RedisNewtonsoftSerializer<DocumentValues>(settings => {
-				settings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto;
-				settings.SerializationBinder = new TypeNameSerializationBinder(_loggerFactory?.CreateLogger<TypeNameSerializationBinder>());
-			});
-			_documentSourceSerializer = new RedisNewtonsoftSerializer<DocumentSource>(settings => settings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects);
-			_documentSerializer = new RedisNewtonsoftSerializer<TType>(settings => settings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects);
 		}
 
 		public IndexManagerBuilder<TType> WithValueFactory(IValueFactory valueFactory)
@@ -79,12 +73,20 @@ namespace RedisIndexer
 		{
 			var documentValuesFactory = GetDocumentValuesFactory();
 
+			var documentSourceSerializer = _documentSourceSerializer ?? new RedisNewtonsoftSerializer<DocumentSource>(settings => settings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects);
+			var documentSerializer = _documentSerializer ?? new RedisNewtonsoftSerializer<TType>(settings => settings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects);
+			var documentValuesSerializer = _documentValuesSerializer ?? new RedisNewtonsoftSerializer<DocumentValues>(settings =>
+			{
+				settings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto;
+				settings.SerializationBinder = new TypeNameSerializationBinder(_loggerFactory?.CreateLogger<TypeNameSerializationBinder>());
+			});
+
 			return new IndexManager<TType>(
 				valueFactory: _valueFactory,
 				documentValuesFactory: documentValuesFactory,
-				documentValuesSerializer: _documentValuesSerializer,
-				documentSourceSerializer: _documentSourceSerializer,
-				documentSerializer: _documentSerializer,
+				documentValuesSerializer: documentValuesSerializer,
+				documentSourceSerializer: documentSourceSerializer,
+				documentSerializer: documentSerializer,
 				expressionHelper: _expressionHelper,
 				loggerFactory: _loggerFactory);
 		}
