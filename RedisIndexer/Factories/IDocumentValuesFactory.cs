@@ -12,6 +12,7 @@ namespace RedisIndexer.Factories
 
 		DocumentValues GetDocumentValues(string documentKey, TType obj);
 
+		IDocumentValuesFactory<TType> AddKeywordCollection(Expression<Func<TType, IEnumerable<bool>>> propertySelector);
 		IDocumentValuesFactory<TType> AddKeywordCollection(Expression<Func<TType, IEnumerable<string>>> propertySelector);
 		IDocumentValuesFactory<TType> AddKeywordCollection(Expression<Func<TType, IEnumerable<short>>> propertySelector);
 		IDocumentValuesFactory<TType> AddKeywordCollection(Expression<Func<TType, IEnumerable<int>>> propertySelector);
@@ -19,6 +20,7 @@ namespace RedisIndexer.Factories
 		IDocumentValuesFactory<TType> AddKeywordCollection(Expression<Func<TType, IEnumerable<DateTime>>> propertySelector);
 		IDocumentValuesFactory<TType> AddKeywordCollection<TProperty>(Expression<Func<TType, IEnumerable<TProperty>>> propertySelector, IValueConverter<TProperty> converter);
 
+		IDocumentValuesFactory<TType> AddKeyword(Expression<Func<TType, bool>> propertySelector);
 		IDocumentValuesFactory<TType> AddKeyword(Expression<Func<TType, string>> propertySelector);
 		IDocumentValuesFactory<TType> AddKeyword(Expression<Func<TType, short>> propertySelector);
 		IDocumentValuesFactory<TType> AddKeyword(Expression<Func<TType, int>> propertySelector);

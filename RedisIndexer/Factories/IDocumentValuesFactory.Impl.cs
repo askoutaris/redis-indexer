@@ -35,6 +35,7 @@ namespace RedisIndexer.Factories
 				values: indexedValues);
 		}
 
+		public IDocumentValuesFactory<TType> AddKeywordCollection(Expression<Func<TType, IEnumerable<bool>>> propertySelector) => AddKeywordCollection(propertySelector, new BoolValueConverter());
 		public IDocumentValuesFactory<TType> AddKeywordCollection(Expression<Func<TType, IEnumerable<string>>> propertySelector) => AddKeywordCollection(propertySelector, new StringValueConverter());
 		public IDocumentValuesFactory<TType> AddKeywordCollection(Expression<Func<TType, IEnumerable<short>>> propertySelector) => AddKeywordCollection(propertySelector, new Int16ValueConverter());
 		public IDocumentValuesFactory<TType> AddKeywordCollection(Expression<Func<TType, IEnumerable<int>>> propertySelector) => AddKeywordCollection(propertySelector, new Int32ValueConverter());
@@ -46,6 +47,7 @@ namespace RedisIndexer.Factories
 			return this;
 		}
 
+		public IDocumentValuesFactory<TType> AddKeyword(Expression<Func<TType, bool>> propertySelector) => AddKeyword(propertySelector, new BoolValueConverter());
 		public IDocumentValuesFactory<TType> AddKeyword(Expression<Func<TType, string>> propertySelector) => AddKeyword(propertySelector, new StringValueConverter());
 		public IDocumentValuesFactory<TType> AddKeyword(Expression<Func<TType, short>> propertySelector) => AddKeyword(propertySelector, new Int16ValueConverter());
 		public IDocumentValuesFactory<TType> AddKeyword(Expression<Func<TType, int>> propertySelector) => AddKeyword(propertySelector, new Int32ValueConverter());
