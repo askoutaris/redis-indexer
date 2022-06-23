@@ -1,5 +1,4 @@
-﻿using RedisIndexer.Persistence;
-using RedisIndexer.Serializers;
+﻿using RedisIndexer.Serializers;
 
 namespace RedisIndexer.Persistence.Write
 {

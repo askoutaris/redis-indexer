@@ -22,7 +22,7 @@ namespace RedisIndexer.Persistence.Read
 			public override async Task<string[]> FetchKeys(IDatabase db)
 			{
 				var redisValues = await db.SortedSetRangeByValueAsync(_setKey, _valueFrom ?? default, _valueTo ?? default);
-				
+
 				var keys = redisValues
 					.Select(x => x.GetDocumentKey())
 					.Distinct()

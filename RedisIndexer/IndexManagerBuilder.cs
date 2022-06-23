@@ -1,10 +1,10 @@
 ﻿using System;
+using Microsoft.Extensions.Logging;
 using RedisIndexer.Factories;
 using RedisIndexer.Persistence;
 using RedisIndexer.Persistence.Write;
 using RedisIndexer.Serializers;
 using RedisIndexer.Utils;
-using Microsoft.Extensions.Logging;
 
 namespace RedisIndexer
 {

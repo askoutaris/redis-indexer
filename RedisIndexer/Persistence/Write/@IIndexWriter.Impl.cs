@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using RedisIndexer.Factories;
-using RedisIndexer.Persistence;
 using RedisIndexer.Serializers;
 
 namespace RedisIndexer.Persistence.Write

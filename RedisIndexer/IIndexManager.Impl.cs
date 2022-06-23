@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using RedisIndexer.Factories;
 using RedisIndexer.Persistence;
 using RedisIndexer.Persistence.Read;
 using RedisIndexer.Persistence.Write;
 using RedisIndexer.Serializers;
 using RedisIndexer.Utils;
-using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 
 namespace RedisIndexer
