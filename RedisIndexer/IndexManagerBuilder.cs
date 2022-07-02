@@ -1,14 +1,13 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
+using RedisIndexer.Entities;
 using RedisIndexer.Factories;
-using RedisIndexer.Persistence;
-using RedisIndexer.Persistence.Write;
 using RedisIndexer.Serializers;
 using RedisIndexer.Utils;
 
 namespace RedisIndexer
 {
-	public class IndexManagerBuilder<TType>
+    public class IndexManagerBuilder<TType>
 	{
 		private IValueFactory _valueFactory;
 		private IRedisSerializer<DocumentValues>? _documentValuesSerializer;

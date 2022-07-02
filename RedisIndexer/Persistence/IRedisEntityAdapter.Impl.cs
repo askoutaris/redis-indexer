@@ -42,14 +42,38 @@ namespace RedisIndexer.Persistence
 			));
 		}
 
+		public void ConcurrentSet(string key, TEntity entity, string? expectedConcurrencyToken, string newConcurrencyToken, TimeSpan? expiry)
+		{
+			var versionKey = GetVersionKey(key);
+
+			_context.Add(db => db.StringSetAsync(versionKey, newConcurrencyToken, expiry));
+
+			Condition condition;
+			if (expectedConcurrencyToken is null)
+				condition = Condition.KeyNotExists(versionKey);
+			else
+				condition = Condition.StringEqual(versionKey, expectedConcurrencyToken);
+
+			_context.AddCondition(condition);
+
+			Set(key, entity, expiry);
+		}
+
 		public void Remove(RedisKey key)
 		{
 			_context.Add(db => db.KeyDeleteAsync(
 				key: GetEntityKey(key.ToString())
 			));
+
+			_context.Add(db => db.KeyDeleteAsync(
+				key: GetVersionKey(key.ToString())
+			));
 		}
 
 		private string GetEntityKey(string key)
 			=> $"{typeof(TEntity).FullName}-{key}";
+
+		private string GetVersionKey(string key)
+			=> $"{typeof(TEntity).FullName}Version-{key}";
 	}
 }

@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using System.Xml.Linq;
+using RedisIndexer.Entities;
 using RedisIndexer.Factories;
 using RedisIndexer.Serializers;
 
@@ -37,6 +39,17 @@ namespace RedisIndexer.Persistence.Write
 			await _redisContext.CommitTransactional();
 		}
 
+		public async Task ConcurrentWrite(string documentKey, string concurrencyToken, TType obj)
+		{
+			var expectedConcurrencyToken = await TryRemoveOldDocumentValues(documentKey);
+
+			ConcurrentIndexNewDocumentValues(documentKey, expectedConcurrencyToken, concurrencyToken, obj);
+
+			UpdateDocumentSource(documentKey, obj);
+
+			await _redisContext.CommitTransactional();
+		}
+
 		public async Task Remove(string documentKey)
 		{
 			await TryRemoveOldDocumentValues(documentKey);
@@ -48,9 +61,22 @@ namespace RedisIndexer.Persistence.Write
 
 		private void IndexNewDocumentValues(string documentKey, TType obj)
 		{
-			var documentValues = _documentValuesFactory.GetDocumentValues(documentKey, obj);
+			var documentValues = _documentValuesFactory.GetDocumentValues(documentKey, null, obj);
 
-			AddOrUpdate(documentValues);
+			_documentValues.Set(documentValues.Key, documentValues, null);
+
+			foreach (var value in documentValues.Values)
+				value.WriteToRedis(_redisContext);
+		}
+
+		private void ConcurrentIndexNewDocumentValues(string documentKey, string? expectedConcurrencyToken, string newConcurrencyToken, TType obj)
+		{
+			var documentValues = _documentValuesFactory.GetDocumentValues(documentKey, newConcurrencyToken, obj);
+
+			_documentValues.ConcurrentSet(documentValues.Key, documentValues, expectedConcurrencyToken, newConcurrencyToken, null);
+
+			foreach (var value in documentValues.Values)
+				value.WriteToRedis(_redisContext);
 		}
 
 		private void UpdateDocumentSource(string documentKey, TType obj)
@@ -60,20 +86,17 @@ namespace RedisIndexer.Persistence.Write
 			_documentSources.Set(documentKey, document, null);
 		}
 
-		private async Task TryRemoveOldDocumentValues(string documentKey)
+		private async Task<ConcurrencyToken?> TryRemoveOldDocumentValues(string documentKey)
 		{
 			var oldDocumentValues = await _documentValues.TryGet(documentKey);
 
 			if (oldDocumentValues is not null)
+			{
 				Remove(oldDocumentValues);
-		}
+				return oldDocumentValues.ConcurrencyToken;
+			}
 
-		private void AddOrUpdate(DocumentValues document)
-		{
-			_documentValues.Set(document.Key, document, null);
-
-			foreach (var value in document.Values)
-				value.WriteToRedis(_redisContext);
+			return null;
 		}
 
 		private void Remove(DocumentValues document)

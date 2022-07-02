@@ -1,4 +1,6 @@
-﻿namespace RedisIndexer.Persistence.Write
+﻿using RedisIndexer.Persistence;
+
+namespace RedisIndexer.Entities
 {
 	public abstract partial class IndexedValue
 	{

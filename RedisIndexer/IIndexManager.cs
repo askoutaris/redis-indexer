@@ -8,6 +8,8 @@ namespace RedisIndexer
 {
 	public interface IIndexManager<TType>
 	{
+		Task ConcurrentIndex(IDatabase database, string documentKey, string concurrencyToken, TType obj);
+		Task ConcurrentIndex(IRedisContext redisContext, string documentKey, string concurrencyToken, TType obj);
 		Task Index(IDatabase database, string documentKey, TType obj);
 		Task Index(IRedisContext redisContext, string documentKey, TType obj);
 		Task Remove(IDatabase database, string documentKey);

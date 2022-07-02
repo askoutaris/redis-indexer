@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using RedisIndexer.Persistence.Write;
+using RedisIndexer.Entities;
 using RedisIndexer.Utils;
 using RedisIndexer.ValueConverters;
 
@@ -23,7 +23,7 @@ namespace RedisIndexer.Factories
 			_valueFactory = valueFactory;
 		}
 
-		public DocumentValues GetDocumentValues(string documentKey, TType obj)
+		public DocumentValues GetDocumentValues(string documentKey, string? concurrencyToken, TType obj)
 		{
 			var indexedValues = _valueFactories
 				.SelectMany(factory => factory.GetValues(documentKey, obj))
@@ -31,6 +31,7 @@ namespace RedisIndexer.Factories
 
 			return new DocumentValues(
 				key: documentKey,
+				concurrencyToken: concurrencyToken,
 				values: indexedValues);
 		}
 

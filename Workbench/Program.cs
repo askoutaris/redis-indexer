@@ -31,6 +31,11 @@ namespace Workbench
 			IIndexManager<Person> indexManager = serviceProvider.GetRequiredService<IIndexManager<Person>>();
 			IDatabase db = serviceProvider.GetRequiredService<IDatabase>();
 
+			var p = GetPeople().First();
+
+			await indexManager.ConcurrentIndex(db, p.Id.ToString(), "1", p);
+			await indexManager.ConcurrentIndex(db, p.Id.ToString(), "2", p);
+
 			foreach (var person in GetPeople())
 				await indexManager.Index(db, person.Id.ToString(), person);
 

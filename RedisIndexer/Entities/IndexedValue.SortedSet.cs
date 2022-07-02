@@ -1,6 +1,7 @@
-﻿using RedisIndexer.Serializers;
+﻿using RedisIndexer.Persistence;
+using RedisIndexer.Serializers;
 
-namespace RedisIndexer.Persistence.Write
+namespace RedisIndexer.Entities
 {
 	abstract partial class IndexedValue
 	{

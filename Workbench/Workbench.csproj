@@ -7,10 +7,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\RedisIndexer.Extensions.DependencyInjection\RedisIndexer.Extensions.DependencyInjection.csproj" />
+		<PackageReference Include="RedisIndexer.Extensions.DependencyInjection" Version="1.0.1" />
 	</ItemGroup>
 
 </Project>

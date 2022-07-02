@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using RedisIndexer.Entities;
 using RedisIndexer.Factories;
 using RedisIndexer.Persistence;
 using RedisIndexer.Persistence.Read;
@@ -48,11 +49,25 @@ namespace RedisIndexer
 			await Index(redisContext, documentKey, obj);
 		}
 
+		public async Task ConcurrentIndex(IDatabase database, string documentKey, string concurrencyToken, TType obj)
+		{
+			var redisContext = new RedisContext(database);
+
+			await ConcurrentIndex(redisContext, documentKey, concurrencyToken, obj);
+		}
+
 		public async Task Index(IRedisContext redisContext, string documentKey, TType obj)
 		{
 			var indexWriter = GetIndexWriter(redisContext);
 
 			await indexWriter.Write(documentKey, obj);
+		}
+
+		public async Task ConcurrentIndex(IRedisContext redisContext, string documentKey, string concurrencyToken, TType obj)
+		{
+			var indexWriter = GetIndexWriter(redisContext);
+
+			await indexWriter.ConcurrentWrite(documentKey, concurrencyToken, obj);
 		}
 
 		public async Task Remove(IDatabase database, string documentKey)

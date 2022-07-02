@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using RedisIndexer.Persistence.Write;
+using RedisIndexer.Entities;
 using RedisIndexer.ValueConverters;
 
 namespace RedisIndexer.Factories
 {
-	public interface IDocumentValuesFactory<TType>
+    public interface IDocumentValuesFactory<TType>
 	{
 		public int MappingsCount { get; }
 
-		DocumentValues GetDocumentValues(string documentKey, TType obj);
+		DocumentValues GetDocumentValues(string documentKey, string? concurrencyToken, TType obj);
 
 		IDocumentValuesFactory<TType> AddKeywordCollection(Expression<Func<TType, IEnumerable<bool>>> propertySelector);
 		IDocumentValuesFactory<TType> AddKeywordCollection(Expression<Func<TType, IEnumerable<string>>> propertySelector);

@@ -1,4 +1,4 @@
-﻿namespace RedisIndexer.Persistence
+﻿namespace RedisIndexer.Entities
 {
 	public class DocumentSource
 	{
