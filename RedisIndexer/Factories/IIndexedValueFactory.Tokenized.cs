@@ -24,7 +24,7 @@ namespace RedisIndexer.Factories
 			IValueConverter<string> converter,
 			IStringTokenizer tokenizer)
 		{
-			_setKey = expressionHelper.GetMemberPath(propertySelector);
+			_setKey = expressionHelper.GetMemberPath<TType>(propertySelector);
 			_propertySelector = propertySelector.Compile();
 			_valueFactory = valueFactory;
 			_converter = converter;

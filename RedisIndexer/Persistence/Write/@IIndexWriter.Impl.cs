@@ -87,7 +87,8 @@ namespace RedisIndexer.Persistence.Write
 			if (oldDocumentValues is not null)
 			{
 				Remove(oldDocumentValues);
-				return oldDocumentValues.ConcurrencyToken;
+				if (oldDocumentValues.ConcurrencyToken is not null)
+					return oldDocumentValues.ConcurrencyToken;
 			}
 
 			return null;

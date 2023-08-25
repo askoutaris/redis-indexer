@@ -21,7 +21,7 @@ namespace RedisIndexer.Factories
 			Expression<Func<TType, IEnumerable<TProperty>>> propertySelector,
 			IValueConverter<TProperty> converter)
 		{
-			_setKey = expressionHelper.GetMemberPath(propertySelector);
+			_setKey = expressionHelper.GetMemberPath<TType>(propertySelector);
 			_valueFactory = valueFactory;
 			_propertySelector = propertySelector.Compile();
 			_converter = converter;

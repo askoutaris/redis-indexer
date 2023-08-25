@@ -8,9 +8,9 @@ namespace RedisIndexer.Utils
 {
 	class ExpressionHelper : IExpressionHelper
 	{
-		public string GetMemberPath(Expression expressionSelector)
+		public string GetMemberPath<TType>(Expression expressionSelector)
 		{
-			var path = new StringBuilder();
+			var path = new StringBuilder($"RedisIndexer.{typeof(TType).Name}");
 			Expression? expression = expressionSelector;
 			do
 			{

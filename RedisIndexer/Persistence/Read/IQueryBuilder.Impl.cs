@@ -21,7 +21,7 @@ namespace RedisIndexer.Persistence.Read
 
 		public QueryBuilder<TType> ByValue<TProperty>(Expression<Func<TType, TProperty>> propertySelector, string value)
 		{
-			var setKey = _expressionHelper.GetMemberPath(propertySelector);
+			var setKey = _expressionHelper.GetMemberPath<TType>(propertySelector);
 			var queryableValueFrom = value != null ? _valueFactory.CreateQueryableValue(value) : null;
 			var queryableValueTo = value != null ? _valueFactory.CreateQueryableValue(value) + "\xff" : null;
 			_queryables.Add(new IndexQueryable.SortedSetRange(setKey, queryableValueFrom, queryableValueTo));
@@ -30,7 +30,7 @@ namespace RedisIndexer.Persistence.Read
 
 		public QueryBuilder<TType> ByValueRange<TProperty>(Expression<Func<TType, TProperty>> propertySelector, string? valueFrom, string? valueTo)
 		{
-			var setKey = _expressionHelper.GetMemberPath(propertySelector);
+			var setKey = _expressionHelper.GetMemberPath<TType>(propertySelector);
 			var queryableValueFrom = valueFrom != null ? _valueFactory.CreateQueryableValue(valueFrom) : null;
 			var queryableValueTo = valueTo != null ? _valueFactory.CreateQueryableValue(valueTo) + "\xff" : null;
 			_queryables.Add(new IndexQueryable.SortedSetRange(setKey, queryableValueFrom, queryableValueTo));

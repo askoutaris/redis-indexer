@@ -4,6 +4,6 @@ namespace RedisIndexer.Utils
 {
 	public interface IExpressionHelper
 	{
-		string GetMemberPath(Expression expression);
+		string GetMemberPath<TType>(Expression expression);
 	}
 }

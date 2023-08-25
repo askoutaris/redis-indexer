@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using RedisIndexer.Persistence.Write;
 
 namespace RedisIndexer.Entities
 {

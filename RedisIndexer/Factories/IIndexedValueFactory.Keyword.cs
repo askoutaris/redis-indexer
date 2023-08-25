@@ -22,7 +22,7 @@ namespace RedisIndexer.Factories
 			IValueFactory valueFactory,
 			IValueConverter<TProperty> converter)
 		{
-			_setKey = expressionHelper.GetMemberPath(propertySelector);
+			_setKey = expressionHelper.GetMemberPath<TType>(propertySelector);
 			_propertySelector = propertySelector.Compile();
 			_valueFactory = valueFactory;
 			_converter = converter;
