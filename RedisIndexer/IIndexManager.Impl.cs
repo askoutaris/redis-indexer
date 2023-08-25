@@ -47,6 +47,8 @@ namespace RedisIndexer
 			var redisContext = new RedisContext(database);
 
 			await Index(redisContext, documentKey, obj);
+
+			await redisContext.CommitTransactional();
 		}
 
 		public async Task ConcurrentIndex(IDatabase database, string documentKey, string concurrencyToken, TType obj)
@@ -54,6 +56,8 @@ namespace RedisIndexer
 			var redisContext = new RedisContext(database);
 
 			await ConcurrentIndex(redisContext, documentKey, concurrencyToken, obj);
+
+			await redisContext.CommitTransactional();
 		}
 
 		public async Task Index(IRedisContext redisContext, string documentKey, TType obj)
@@ -75,6 +79,8 @@ namespace RedisIndexer
 			var redisContext = new RedisContext(database);
 
 			await Remove(redisContext, documentKey);
+
+			await redisContext.CommitTransactional();
 		}
 
 		public async Task Remove(IRedisContext redisContext, string documentKey)

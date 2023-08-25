@@ -6,7 +6,7 @@ using RedisIndexer.ValueConverters;
 
 namespace RedisIndexer.Factories
 {
-    public interface IDocumentValuesFactory<TType>
+	public interface IDocumentValuesFactory<TType>
 	{
 		public int MappingsCount { get; }
 

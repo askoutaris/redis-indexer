@@ -35,8 +35,6 @@ namespace RedisIndexer.Persistence.Write
 			IndexNewDocumentValues(documentKey, obj);
 
 			UpdateDocumentSource(documentKey, obj);
-
-			await _redisContext.CommitTransactional();
 		}
 
 		public async Task ConcurrentWrite(string documentKey, string concurrencyToken, TType obj)
@@ -46,8 +44,6 @@ namespace RedisIndexer.Persistence.Write
 			ConcurrentIndexNewDocumentValues(documentKey, expectedConcurrencyToken, concurrencyToken, obj);
 
 			UpdateDocumentSource(documentKey, obj);
-
-			await _redisContext.CommitTransactional();
 		}
 
 		public async Task Remove(string documentKey)
@@ -55,8 +51,6 @@ namespace RedisIndexer.Persistence.Write
 			await TryRemoveOldDocumentValues(documentKey);
 
 			_documentSources.Remove(documentKey);
-
-			await _redisContext.CommitTransactional();
 		}
 
 		private void IndexNewDocumentValues(string documentKey, TType obj)
